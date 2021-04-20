@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="assets/favicon.ico" rel="shortcut icon" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;800&display=swap" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+  <title>photo-filter</title>
+</head>
+<body id="body">
+  <header class="header">
+    <h1 class="header-title">Photo-filter</h1>
+  </header>
+  <main class="main">
+    <div class="filters">
+      <label>
+        Blur:
+        <input id="blur" name="blur" data-sizing="px" type="range" min="0" max="10" value="0" />
+        <output id="blurValue" name="result">0</output>
+      </label>
+      <label>
+        Invert:
+        <input id="invert" name="invert" data-sizing="%" type="range" min="0" max="100" value="0" />
+        <output id="invertValue" name="result">0</output>
+      </label>
+      <label>
+        Sepia:
+        <input id="sepia" name="sepia" data-sizing="%" type="range" min="0" max="100" value="0" />
+        <output id="sepiaValue" name="result">0</output>
+      </label>
+      <label>
+        Saturate:
+        <input id="saturate" name="saturate" data-sizing="%" type="range" min="0" max="200" value="100" />
+        <output id="saturateValue" name="result">100</output>
+      </label>
+      <label>
+        Hue rotate:
+        <input id="hue" name="hue" data-sizing="deg" type="range" min="0" max="360" value="0" />
+        <output id="hueValue" name="result">0</output>
+      </label>
+    </div>
+    <div class="editor">
+      <div class="btn-container">
+        <button class="btn btn-reset" id="reset">Reset</button>
+        <button class="btn btn-next btn-active" id="next">Next picture</button>
+        <label class="btn btn-load" for="btnInput">
+          Load picture
+          <input class="btn-load--input" id="btnInput" name="upload" type="file" placeholder="Load picture" />
+        </label>
+        <button class="btn btn-save" id="saveBtn">Save picture</button>
+      </div>
+      <img src="assets/img/img.jpg" id="targetImg"  alt="image" style="color: ``" />
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="footer-container">
+      <a class="github" href="#" target="_blank" rel="noopener noreferrer">github</a>
+      <a class="rss" href="https://rs.school/js/" target="_blank" rel="noopener">
+        <span class="rss-year">'21</span>
+      </a>
+    </div>
+  </footer>
+  <canvas id="myCanvas"></canvas>
+  <button class="fullscreen openfullscreen" id="screenToggle"></button>
+  <script type="text/javascript">
+  	let image = document.getElementById('targetImg'); 
+    let currentIMG = '00';
+    let filters = {"blur": "blur(0px)", "invert": "invert(0%)", "sepia": "sepia(0%)", "saturate": "saturate(100%)", "hue-rotate": "hue-rotate(0deg)"};
+    
+    document.getElementById('screenToggle').addEventListener('click', function(){
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        document.exitFullscreen();
+      }
+      else{
+        document.getElementById('body').requestFullscreen();
+      }     
+    })
+
+  	document.getElementById('blur').addEventListener('input', (e) =>{
+  		document.getElementById('blurValue').innerText = e.target.value;
+  		filters["blur"] = `blur(${e.target.value}px)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+  	})
+  	document.getElementById('invert').addEventListener('input', (e) => {
+  		document.getElementById('invertValue').innerText = e.target.value;
+  		filters["invert"] = `invert(${e.target.value}%)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+  	}) 
+  	document.getElementById('sepia').addEventListener('input', (e) => {  		
+  		document.getElementById('sepiaValue').innerText = e.target.value;
+  		filters["sepia"] = `sepia(${e.target.value}%)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+  	}) 
+  	document.getElementById('saturate').addEventListener('input', (e) => {
+  		document.getElementById('saturateValue').innerText = e.target.value;
+  		filters["saturate"] = `saturate(${e.target.value}%)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+
+  	})   	  	  	
+  	document.getElementById('hue').addEventListener('input', (e) => {
+  		document.getElementById('hueValue').innerText = e.target.value;
+  		filters["hue-rotate"] = `hue-rotate(${e.target.value}deg)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+  	}) 
+    document.getElementById('reset').addEventListener('click', (e) => {
+      document.getElementById('blurValue').innerText = 0;
+      document.getElementById('invertValue').innerText = 0;
+      document.getElementById('sepiaValue').innerText = 0;
+      document.getElementById('saturateValue').innerText = 100;
+      document.getElementById('hueValue').innerText = 0;
+      document.getElementById('blur').value = 0;
+      document.getElementById('invert').value = 0;
+      document.getElementById('sepia').value = 0;
+      document.getElementById('saturate').value = 100;
+      document.getElementById('hue').value = 0;      
+      filters["blur"] = `blur(${0}px)`;   
+      filters["invert"] = `invert(${0}%)`;    
+      filters["sepia"] = `sepia(${0}%)`;   
+      filters["saturate"] = `saturate(${100}%)`;    
+      filters["hue-rotate"] = `hue-rotate(${0}deg)`;
+      image.style.filter = `${Object.values(filters).join(' ')}`;
+    })
+    document.getElementById('next').addEventListener('click', (e) => {
+      let currentDate = new Date();
+      let hours = currentDate.getHours();
+      let minutes = currentDate.getMinutes();
+      let seconds = currentDate.getSeconds();
+      let time = hours * 3600 + minutes * 60 + seconds;
+      let daytime;
+      if (time >= 21600 && time < 43200) {
+        daytime ='morning';
+      }
+      else if(time >= 43200 && time < 64800){
+        daytime ='day';
+      }
+      else if (time >= 64800 && time < 86399) {
+        daytime ='evening';
+      }
+      else {
+        daytime ='night';
+      }  
+
+      if (currentIMG < 20) {
+        currentIMG = (Number(currentIMG));
+        currentIMG++;
+        currentIMG = ('0' + currentIMG).slice(-2);
+      }
+      else {
+        currentIMG = '01';
+      }
+
+      let path = `assets/img/${daytime}/${currentIMG}.jpg`  
+      image.setAttribute('src', path);
+      image.style.filter = `${Object.values(filters).join(' ')}`;  
+    }) 
+
+
+
+    document.getElementById('saveBtn').addEventListener('click', function(e){
+        var myCanvas = document.getElementById("myCanvas");
+        var img = document.createElement('img');
+        var ctx = myCanvas.getContext ? myCanvas.getContext('2d') : null; 
+        img.src = 'https://github.com/rolling-scopes-school/stage1-tasks/blob/assets/images/day/01.jpg';     
+
+        img.onload = function () {  
+            ctx.drawImage(img, 0, 0, myCanvas.width, myCanvas.height);
+
+            var data = myCanvas.toDataURL("image/png");
+            if (!window.open(data)) {
+                document.location.href = data;
+            }
+        }        
+    })
+
+  </script>
+</body>
+</html>
