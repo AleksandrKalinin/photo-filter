@@ -180,15 +180,18 @@
         var myCanvas = document.getElementById("myCanvas");
         var img = document.createElement('img');
         var ctx = myCanvas.getContext ? myCanvas.getContext('2d') : null; 
-        img.src = `assets/img/day/${currentIMG}.jpg`;
+        //img.src = `assets/img/day/${currentIMG}.jpg`;
+        img.src = `assets/img/day/01.jpg`;
         img.crossOrigin = 'anonymous';     
 
         img.onload = function () {  
             ctx.drawImage(img, 0, 0, myCanvas.width, myCanvas.height);
 
             var data = myCanvas.toDataURL("image/png");
+            //var win = window.open(data);
+            //win.document.write('<iframe src="' + base64URL  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');            
             if (!window.open(data)) {
-                document.location.href = data;
+                document.location.href ='data:application/octet-stream;base64,' + data;
             }
         }        
     })
