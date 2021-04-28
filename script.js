@@ -2,6 +2,7 @@ let image = document.getElementById('targetImg');
 let currentIMG = '00';
 let filters = {"blur": "blur(0px)", "invert": "invert(0%)", "sepia": "sepia(0%)", "saturate": "saturate(100%)", "hue-rotate": "hue-rotate(0deg)"};
 let path = "https://raw.githubusercontent.com/AleksandrKalinin/photo-filter/gh-pages/assets/img/img.jpg";
+let blur = 0;
 let loadedPath = '';
   
 document.getElementById('screenToggle').addEventListener('click', function(){
@@ -33,6 +34,7 @@ document.getElementById('btnInput').addEventListener('change', function(e){
 document.getElementById('blur').addEventListener('input', (e) =>{
 	document.getElementById('blurValue').innerText = e.target.value;
 	filters["blur"] = `blur(${e.target.value}px)`;
+  blur = e.target.value;
   image.style.filter = `${Object.values(filters).join(' ')}`;
 });
 
@@ -130,13 +132,20 @@ document.getElementById('saveBtn').addEventListener('click', function(e){
     img.onload = function () { 
     	canvas.width = img.width;
     	canvas.height = img.height;
-    	ctx.filter = `${Object.values(filters).join(' ')}`;
-        ctx.drawImage(img, 0, 0);
-        var btn = document.createElement('a');
-        btn.download = 'download.png';
-        btn.href = canvas.toDataURL();
-        btn.click();
-        btn.delete;
-        document.getElementById("myCanvas").outerHTML = "";
+      let imgWIdth = document.getElementById('targetImg').width;
+      let localFilters = Object.assign({}, filters);
+      let multiplier = img.width / imgWIdth;
+      localFilters["blur"] = `blur(${blur * multiplier}px)`
+      console.log(localFilters);
+      console.log(filters);
+    	ctx.filter = `${Object.values(localFilters).join(' ')}`;
+      console.log(ctx);
+      ctx.drawImage(img, 0, 0);
+      var btn = document.createElement('a');
+      btn.download = 'download.png';
+      btn.href = canvas.toDataURL();
+      btn.click();
+      btn.delete;
+      document.getElementById("myCanvas").outerHTML = "";
     }
 })
