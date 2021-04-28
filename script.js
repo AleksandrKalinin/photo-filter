@@ -2,6 +2,7 @@ let image = document.getElementById('targetImg');
 let currentIMG = '00';
 let filters = {"blur": "blur(0px)", "invert": "invert(0%)", "sepia": "sepia(0%)", "saturate": "saturate(100%)", "hue-rotate": "hue-rotate(0deg)"};
 let path = "https://raw.githubusercontent.com/AleksandrKalinin/photo-filter/gh-pages/assets/img/img.jpg";
+let loadedPath = '';
   
 document.getElementById('screenToggle').addEventListener('click', function(){
   if (document.fullscreenElement || document.webkitFullscreenElement) {
@@ -21,6 +22,7 @@ document.getElementById('btnInput').addEventListener('change', function(e){
   reader.onload = function() {
     image.src = reader.result;
     image.style.filter = `${Object.values(filters).join(' ')}`;
+    loadedPath = reader.result;
   };
 
   reader.onerror = function() {
@@ -78,6 +80,7 @@ document.getElementById('reset').addEventListener('click', (e) => {
 })
 
 document.getElementById('next').addEventListener('click', (e) => {
+  loadedPath = '';
   let currentDate = new Date();
   let hours = currentDate.getHours();
   let minutes = currentDate.getMinutes();
@@ -118,14 +121,19 @@ document.getElementById('saveBtn').addEventListener('click', function(e){
     var ctx = myCanvas.getContext ? myCanvas.getContext('2d') : null; 
     const img = new Image();
     img.setAttribute('crossOrigin', 'anonymous');
-    img.src = path;
+    if (loadedPath) {
+      img.src = loadedPath;
+    }
+    else{
+      img.src = path;
+    }
     img.onload = function () { 
     	canvas.width = img.width;
     	canvas.height = img.height;
     	ctx.filter = `${Object.values(filters).join(' ')}`;
         ctx.drawImage(img, 0, 0);
         var btn = document.createElement('a');
-        btn.download = 'image.jpg';
+        btn.download = 'download.png';
         btn.href = canvas.toDataURL();
         btn.click();
         btn.delete;

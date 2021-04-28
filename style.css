@@ -1,3 +1,8 @@
+html {
+    background-color: #313940;
+}
+
+
 * {
   padding: 0;
   margin: 0;
@@ -12,6 +17,7 @@ body {
   background-color: #313940;
   font-family: 'Open Sans', Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+  background: #313940;
 }
 .header {
   text-align: center;
@@ -27,6 +33,7 @@ body {
   color: #fff;
 }
 .main {
+  background-color: #313940;
   min-height: calc(100vh - 110px);
   padding: 58px 10px 0;
   display: flex;
